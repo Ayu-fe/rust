@@ -4,18 +4,18 @@ use rust::Config;
 
 fn main() {
     let env: Vec<String> = env::args().collect();
-    println!("args is {:#?}", env);
+    eprintln!("args is {:#?}", env);
 
     // let query = &env[1];
     // let file = &env[2];
 
     let config = Config::new(&env).unwrap_or_else(|err| {
-        println!("something is wrong: {}", err);
+        eprintln!("something is wrong: {}", err);
         process::exit(1);
     });
 
     if let Err(e) = rust::run(config) {
-        println!("read file error: {}", e);
+        eprintln!("read file error: {}", e);
         process::exit(1)
     }
 

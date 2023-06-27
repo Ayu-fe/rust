@@ -7,6 +7,7 @@ mod vector;
 mod panic_result;
 mod trait_life;
 mod minigrep;
+mod closure;
 
 fn main() {
   // 猜数字游戏
@@ -31,5 +32,8 @@ fn main() {
   // trait_life::start();
 
   // minigrep
-  minigrep::start();
+  // minigrep::start();
+
+  // 闭包
+  closure::start();
 }
