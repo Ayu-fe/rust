@@ -17,35 +17,46 @@
 //   println!("123");
 // }
 
-use std::fs;
-use std::error::Error;
 use std::env;
+use std::error::Error;
+use std::fs;
 
 // 封装配置结构体  已new的方式构造配置 返回Result处理错误
 pub struct Config {
     pub query: String,
     pub file_name: String,
-    pub insensitive: bool
+    pub insensitive: bool,
 }
 
 impl Config {
-    pub fn new(args: &Vec<String>) -> Result<Config, &'static str> {
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
         if args.len() < 3 {
             return Err("error");
         }
-        let query = args[1].clone();
-        let file_name = args[2].clone();
+        args.next();
+        let query = match args.next() {
+            Some(v) => v,
+            None => return Err("error")
+        };
+        let file_name = match args.next() {
+            Some(v) => v,
+            None => return Err("error")
+        };
 
         // 读取INSENSITIVE 这个环境变量 is_err() 返回一个bool
         let insensitive = env::var("INSENSITIVE").is_err();
-        Ok(Config { query, file_name, insensitive })
+        Ok(Config {
+            query,
+            file_name,
+            insensitive,
+        })
     }
 }
 
 // 保持main函数简洁 抽离关键逻辑 返回Result处理错误
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let target_str = fs::read_to_string(config.file_name)?;
-    
+
     // 控制流  这种写法还是头一次见  不得不说非常方便
     let result = if config.insensitive {
         search_with_insensitivie(&config.query, &target_str)
@@ -60,24 +71,17 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn search<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
-    let mut result = Vec::new();
-    for line in content.lines() {
-        if line.contains(query) {
-            result.push(line);
-        }
-    }
-    result
+    content
+        .lines()
+        .filter(|item| item.contains(query))
+        .collect()
 }
 
 pub fn search_with_insensitivie<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
-    let mut result = Vec::new();
-    let query = query.to_lowercase();
-    for line in content.lines() {
-        if line.to_lowercase().contains(&query) {
-            result.push(line)
-        }
-    }
-    result
+    content
+        .lines()
+        .filter(|item| item.to_lowercase().contains(query))
+        .collect()
 }
 
 // 测试

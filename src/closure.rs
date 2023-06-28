@@ -12,32 +12,40 @@ fn main() {
     let new_arr: Vec<_> = arr.iter().map(|x| x + 1).collect();
     println!("new arr is {:#?}, old arr is {:#?}", new_arr, arr);
     // into_iter()获取vec的所有权  filter不会获取vec的所有权
-    let filter_arr: Vec<_> = arr.into_iter().filter(|item| *item == 2).collect();
+    let filter_arr: Vec<_> = arr
+        .into_iter()
+        .filter(|item| *item == 2)
+        .collect::<Vec<i32>>();
     println!("filter arr is {:#?}", filter_arr);
 }
 
 struct Cacher<T>
-  where T: Fn(u32) -> u32
+where
+    T: Fn(u32) -> u32,
 {
-  calculation: T,
-  value: HashMap<u32, u32>
+    calculation: T,
+    value: HashMap<u32, u32>,
 }
 
-impl<T> Cacher<T> 
-  where T: Fn(u32) -> u32
+impl<T> Cacher<T>
+where
+    T: Fn(u32) -> u32,
 {
     fn new(calculation: T) -> Cacher<T> {
-      Cacher { calculation, value: HashMap::new() }
+        Cacher {
+            calculation,
+            value: HashMap::new(),
+        }
     }
     fn value(&mut self, val: u32) -> u32 {
-      match self.value.get(&val) {
-        Some(v) => *v,
-        None => {
-          let v = (self.calculation)(val);
-          self.value.insert(val, v);
-          v
+        match self.value.get(&val) {
+            Some(v) => *v,
+            None => {
+                let v = (self.calculation)(val);
+                self.value.insert(val, v);
+                v
+            }
         }
-      }
     }
 }
 

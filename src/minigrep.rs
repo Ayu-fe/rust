@@ -3,13 +3,13 @@ use std::process;
 use rust::Config;
 
 fn main() {
-    let env: Vec<String> = env::args().collect();
-    eprintln!("args is {:#?}", env);
+    // let env: Vec<String> = env::args().collect();
+    // eprintln!("args is {:#?}", env);
 
     // let query = &env[1];
     // let file = &env[2];
 
-    let config = Config::new(&env).unwrap_or_else(|err| {
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
         eprintln!("something is wrong: {}", err);
         process::exit(1);
     });
