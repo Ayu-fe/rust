@@ -8,6 +8,8 @@ mod panic_result;
 mod trait_life;
 mod minigrep;
 mod closure;
+mod smart_point;
+mod spawn;
 
 fn main() {
   // 猜数字游戏
@@ -34,6 +36,12 @@ fn main() {
   // minigrep
   // minigrep::start();
 
-  // 闭包
-  closure::start();
+  // 闭包&迭代器
+  // closure::start();
+
+  // 智能指针
+  // smart_point::start();
+
+  // 线程 无畏并发
+  spawn::start();
 }
